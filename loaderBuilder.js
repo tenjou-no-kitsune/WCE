@@ -37,7 +37,7 @@ ${this.matchBlock}
     if (this.isBranch) {
       return `${this.getUserScriptMeta(true)}
 
-import(\`https://sidiousious.gitlab.io/bc-addon-loader/fusam.js?v=\${(Date.now()/10000).toFixed(0)}\`);
+import(\`https://tenjou-no-kitsune.github.io/fusam-mirror/fusam.js?v=\${(Date.now()/10000).toFixed(0)}\`);
 
 var fusam = JSON.parse(localStorage.getItem("fusam.settings") || "{}");
 fusam.enabledDistributions ??= {};
@@ -54,7 +54,7 @@ localStorage.setItem("fusam.settings", JSON.stringify(fusam));`;
     }
     return `${this.getUserScriptMeta(true)}
 
-import(\`https://sidiousious.gitlab.io/bc-addon-loader/fusam.js?v=\${(Date.now()/10000).toFixed(0)}\`).then(() => import("${this.URL}/wce.js"));
+import(\`https://tenjou-no-kitsune.github.io/fusam-mirror/fusam.js?v=\${(Date.now()/10000).toFixed(0)}\`).then(() => import("${this.URL}/wce.js"));
 
 var preloadLink = document.createElement("link");
 preloadLink.href = "${this.URL}/wce.js";

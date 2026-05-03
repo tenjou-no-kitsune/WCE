@@ -50,6 +50,8 @@ jobs:
       - name: prepare dist
         run: |
           mv ${{ runner.temp }}/beta dist/
+          grep -rl "gitlab" dist/ | xargs sed -i \
+            -e 's|sidiousious.gitlab.io/bc-addon-loader|tenjou-no-kitsune.github.io/fusam-mirror|g'
 
       - name: configure pages
         uses: actions/configure-pages@v5
