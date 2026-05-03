@@ -1,0 +1,64 @@
+name: publish
+
+on:
+  push:
+    branches: ["github-ver"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout beta
+        uses: actions/checkout@v4
+        with:
+          ref: beta
+          fetch-depth: 0
+
+      - name: node setup
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+      
+      - name: build beta
+        run: |
+          git checkout beta
+          npm ci
+          npm run build
+          mkdir -p ${{ runner.temp }}/beta
+          cp -r dist/* ${{ runner.temp }}/beta/
+
+      - name: build stable
+        run: |
+          git checkout main
+          npm ci
+          npm run build
+      
+      - name: prepare dist
+        run: |
+          mv ${{ runner.temp }}/beta dist/
+
+      - name: configure pages
+        uses: actions/configure-pages@v5
+
+      - name: upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'dist'
+
+      - name: deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
