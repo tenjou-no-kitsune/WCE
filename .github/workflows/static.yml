@@ -38,6 +38,13 @@ jobs:
           git checkout beta
           npm ci
           npm run build
+
+          grep -rl ":4000" dist/ | xargs sed -i \
+            -e 's|http://localhost:4000|https://tenjou-no-kitsune.github.io/WCE/beta|g'
+          
+          grep -rl "local loader" dist/ | xargs sed -i \
+            -e 's|local loader|beta loader|g'
+
           mkdir -p ${{ runner.temp }}/beta
           cp -r dist/* ${{ runner.temp }}/beta/
 
@@ -46,6 +53,12 @@ jobs:
           git checkout main
           npm ci
           npm run build
+
+          grep -rl ":4000" dist/ | xargs sed -i \
+            -e 's|http://localhost:4000|https://tenjou-no-kitsune.github.io/WCE|g'
+
+          grep -rl "local loader" dist/ | xargs sed -i \
+            -e 's|local loader|loader|g'
       
       - name: prepare dist
         run: |
