@@ -53,6 +53,23 @@ jobs:
           grep -rl "gitlab" dist/ | xargs sed -i \
             -e 's|sidiousious.gitlab.io/bc-addon-loader|tenjou-no-kitsune.github.io/fusam-mirror|g'
 
+          RE_MATCH=".*@match http://localhost.*"
+          TPL_MATCH="${{ runner.temp }}/match.tpl"
+          cat <<EOF > "$TPL_MATCH"
+          // @match https://bondageprojects.elementfx.com/*
+          // @match https://www.bondageprojects.elementfx.com/*
+          // @match https://bondage-europe.com/*
+          // @match https://www.bondage-europe.com/*
+          // @match https://bondage-asia.com/*
+          // @match https://www.bondage-asia.com/*
+          // @match https://bondageprojects.com/*
+          // @match https://www.bondageprojects.com/*
+          EOF
+          grep -rl "@match http://localhost" dist/ | xargs -I {} sed -i \
+            -e "\|$RE_MATCH|r $TPL_MATCH" \
+            -e "\|$RE_MATCH|d" \
+            {}
+
       - name: configure pages
         uses: actions/configure-pages@v5
 
