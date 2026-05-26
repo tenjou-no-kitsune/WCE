@@ -1,0 +1,52 @@
+name: sync
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: sync
+        run: |
+          set +e
+
+          git remote add upstream "https://github.com/KittenApps/WCE.git" -t main -t beta
+          FETCH_OUTPUT=$(git fetch upstream 2>&1)
+          FETCH_STATUS=$?
+          echo "$FETCH_OUTPUT"
+          if [ $FETCH_STATUS -ne 0 ]; then
+            echo "'git fetch' failed with exit code $FETCH_STATUS"
+            exit 1
+          fi
+
+          SYNC_OUTPUT=$(git push origin upstream/main:main upstream/beta:beta --force 2>&1)
+          SYNC_STATUS=$?
+          echo "$SYNC_OUTPUT"
+          if [ $SYNC_STATUS -ne 0 ]; then
+            echo "'git push' failed with exit code $SYNC_STATUS"
+            exit 1
+          fi
+
+          HAS_CHANGES=$(echo "$SYNC_OUTPUT" | grep -qE "(->|forced update)" && echo "true" || echo "false")
+          echo "HAS_CHANGES=$HAS_CHANGES" >> $GITHUB_ENV
+
+      - name: publish
+        if: env.HAS_CHANGES == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run static.yml --repo ${{ github.repository }}
