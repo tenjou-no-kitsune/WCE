@@ -1,4 +1,4 @@
-// oxlint-disable unicorn/no-negated-condition
+// oxlint-disable unicorn/no-negated-condition no-use-before-define
 import { ActivityTriggers, ArousalExpressionStages, EventExpressions } from "../util/expressions";
 import { createTimer } from "../util/hooks";
 import { displayText } from "../util/localization";
@@ -785,7 +785,7 @@ export default async function automaticExpressions() {
         setExpression(t, desiredExpression[t].Expression ?? null, desiredExpression[t].Color);
         ServerSend("ChatRoomCharacterExpressionUpdate", {
           Name: desiredExpression[t].Expression ?? null,
-          Group: t,
+          Group: /** @type {keyof ExpressionNameMap} */ (t),
           Appearance: ServerAppearanceBundle(Player.Appearance),
         });
 

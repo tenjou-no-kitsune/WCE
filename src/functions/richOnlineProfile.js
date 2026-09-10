@@ -22,6 +22,10 @@ export default function richOnlineProfile() {
     ta.style.display = "";
   }
 
+  function resizeRichTextArea() {
+    ElementPositionFix(descRich, 36, 100, 160, 1790, 750);
+  }
+
   function enableRichTextArea() {
     hideOriginalTextArea();
 
@@ -48,10 +52,6 @@ export default function richOnlineProfile() {
     if (!div) return;
     div.textContent = OnlineProfileMode === "Description" ? OnlineProfileTextDesc : OnlineProfileTextOwnersNotes;
     processChatAugmentsForLine(div, () => false);
-  }
-
-  function resizeRichTextArea() {
-    ElementPositionFix(descRich, 36, 100, 160, 1790, 750);
   }
 
   function disableRichTextArea() {

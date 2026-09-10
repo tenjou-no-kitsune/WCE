@@ -45,6 +45,7 @@ export default async function automaticReconnect() {
       if (window.crypto?.subtle) {
         setTimeout(() => {
           localStorage.removeItem("bce.passwords");
+          // oxlint-disable-next-line no-use-before-define
           storeAccounts(accs);
         }, 1);
       }

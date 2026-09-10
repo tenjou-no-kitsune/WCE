@@ -46,6 +46,7 @@ export default async function privateWardrobe() {
   });
 
   SDK.hookFunction("AppearanceRun", HOOK_PRIORITIES.AddBehaviour, (args, next) => {
+    // @ts-expect-error
     if (CharacterAppearanceMode === "Wardrobe" && currentWardrobeTargetIsPlayer()) {
       DrawCheckbox(1300, 350, 64, 64, "", excludeBodyparts, false, "white");
       drawTextFitLeft(displayText("Load without body parts"), 1374, 380, 630, "white");
@@ -54,6 +55,7 @@ export default async function privateWardrobe() {
   });
 
   SDK.hookFunction("AppearanceClick", HOOK_PRIORITIES.ModifyBehaviourMedium, (args, next) => {
+    // @ts-expect-error
     if (CharacterAppearanceMode === "Wardrobe" && MouseIn(1300, 350, 64, 64) && currentWardrobeTargetIsPlayer()) {
       excludeBodyparts = !excludeBodyparts;
       return null;
@@ -95,6 +97,7 @@ export default async function privateWardrobe() {
     }
     const ret = next(args);
     if (fbcSettings.privateWardrobe && WardrobeOffset >= WardrobeCharacter.length && (MouseIn(415, 25, 60, 60) || MouseIn(1000, 25, 60, 60))) {
+      // @ts-expect-error
       WardrobeLoadCharacters(false);
     }
     return ret;

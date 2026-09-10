@@ -227,11 +227,12 @@ export const defaultSettings = {
     description:
       "Enables the Local Wardrobe - save 288 additional outfits on your device (not synced between devices, but shared between alts on the same device).",
   },
+  // ToDO: ToDo: remove once R132 is out
   privateWardrobe: {
     label: "Replace wardrobe list with character previews",
     type: "checkbox",
     value: false,
-    disabled: () => false,
+    disabled: () => GameVersion !== "R131",
     sideEffects: newValue => {
       debug("privateWardrobe", newValue);
     },
@@ -793,17 +794,6 @@ export const defaultSettings = {
     },
     category: "misc",
     description: "Show a confirmation prompt before allowing content from a 3rd party domain to be loaded.",
-  },
-  shareAddons: {
-    label: "Share Addons",
-    type: "checkbox",
-    value: true,
-    disabled: () => false,
-    sideEffects: newValue => {
-      debug("shareAddons", newValue);
-    },
-    category: "misc",
-    description: "Share a list of your installed addons with other WCE users in the room, visible via /versions chat command.",
   },
   buttplugDevices: {
     label: "Buttplug Devices",

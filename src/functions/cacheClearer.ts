@@ -33,7 +33,12 @@ export default function cacheClearer(): void {
   SDK.hookFunction("ChatRoomMenuButtonVisualState", HOOK_PRIORITIES.AddBehaviour, (args, next) => {
     if ((args[0] as ChatRoomMenuButtonWCE) !== "clearCache") return next(args);
     const state = "Default" as const;
-    return { image: "Icons/Small/Reset.png", state, hoverText: "[WCE] clear and reload the drawing cache of all characters" };
+    // ToDo: remove once R132 is out
+    return {
+      image: GameVersion === "R131" ? "Icons/Small/Reset.png" : "Icons/Reset.png",
+      state,
+      hoverText: "[WCE] clear and reload the drawing cache of all characters",
+    };
   });
 
   SDK.hookFunction("ChatRoomMenuPerformAction", HOOK_PRIORITIES.AddBehaviour, (args, next) => {

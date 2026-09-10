@@ -94,6 +94,29 @@ export default function instantMessenger() {
     localStorage.setItem(storageKey(), JSON.stringify(history));
   }
 
+  function sortIM() {
+    [...friendList.children]
+      .sort((a, b) => {
+        const notA = !a.classList.contains(onlineClass);
+        const notB = !b.classList.contains(onlineClass);
+        if ((notA && notB) || (!notA && !notB)) {
+          const aUpdatedAt = a.getAttribute("data-last-updated") ?? "";
+          const bUpdatedAt = b.getAttribute("data-last-updated") ?? "";
+          const au = /^\d+$/u.test(aUpdatedAt) ? parseInt(aUpdatedAt) : 0;
+          const bu = /^\d+$/u.test(bUpdatedAt) ? parseInt(bUpdatedAt) : 0;
+          return bu - au;
+        }
+        if (notA) {
+          return 1;
+        }
+        return -1;
+      })
+      .forEach(node => {
+        friendList.removeChild(node);
+        friendList.appendChild(node);
+      });
+  }
+
   /**
    * @param {number} friendId
    * @returns {void}
@@ -401,29 +424,6 @@ export default function instantMessenger() {
     }
   );
 
-  function sortIM() {
-    [...friendList.children]
-      .sort((a, b) => {
-        const notA = !a.classList.contains(onlineClass);
-        const notB = !b.classList.contains(onlineClass);
-        if ((notA && notB) || (!notA && !notB)) {
-          const aUpdatedAt = a.getAttribute("data-last-updated") ?? "";
-          const bUpdatedAt = b.getAttribute("data-last-updated") ?? "";
-          const au = /^\d+$/u.test(aUpdatedAt) ? parseInt(aUpdatedAt) : 0;
-          const bu = /^\d+$/u.test(bUpdatedAt) ? parseInt(bUpdatedAt) : 0;
-          return bu - au;
-        }
-        if (notA) {
-          return 1;
-        }
-        return -1;
-      })
-      .forEach(node => {
-        friendList.removeChild(node);
-        friendList.appendChild(node);
-      });
-  }
-
   SDK.hookFunction("ServerAccountBeep", HOOK_PRIORITIES.OverrideBehaviour, (args, next) => {
     const [beep] = args;
     if (beep && isNonNullObject(beep) && !beep.BeepType && fbcSettings.instantMessenger) {
@@ -446,20 +446,28 @@ export default function instantMessenger() {
     return next(args);
   });
 
+  function hideIM() {
+    container.classList.add("bce-hidden");
+    messageInput.blur();
+    friendSearch.blur();
+  }
+
   /** @type {[number, number, number, number]} */
   const buttonPosition = [70, 905, 60, 60];
 
   SDK.hookFunction("DrawProcess", HOOK_PRIORITIES.AddBehaviour, (args, next) => {
     const ret = next(args);
     if (fbcSettings.instantMessenger) {
+      // ToDo: remove once R132 is out
+      const icon = GameVersion === "R131" ? "Icons/Small/Chat.png" : "Icons/Chat.png";
       if (
         !fbcSettings.allowIMBypassBCX &&
         (BCXgetRuleState("speech_restrict_beep_receive")?.isEnforced || (BCXgetRuleState("alt_hide_friends")?.isEnforced && Player.GetBlindLevel() >= 3))
       ) {
         if (!container.classList.contains("bce-hidden")) hideIM();
-        DrawButton(...buttonPosition, "", "Gray", "Icons/Small/Chat.png", displayText("Instant Messenger (Disabled by BCX)"), false);
+        DrawButton(...buttonPosition, "", "Gray", icon, displayText("Instant Messenger (Disabled by BCX)"), false);
       } else {
-        DrawButton(...buttonPosition, "", unreadSinceOpened ? "Red" : "White", "Icons/Small/Chat.png", displayText("Instant Messenger"), false);
+        DrawButton(...buttonPosition, "", unreadSinceOpened ? "Red" : "White", icon, displayText("Instant Messenger"), false);
       }
     }
     return ret;
@@ -503,12 +511,6 @@ export default function instantMessenger() {
       e.stopPropagation();
       e.preventDefault();
     }
-  }
-
-  function hideIM() {
-    container.classList.add("bce-hidden");
-    messageInput.blur();
-    friendSearch.blur();
   }
 
   document.addEventListener("keydown", keyHandler, true);

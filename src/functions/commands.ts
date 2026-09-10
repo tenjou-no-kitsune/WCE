@@ -328,25 +328,20 @@ export default async function commands(): Promise<void> {
     },
     {
       Tag: "versions",
-      Description: displayText("show versions of the club, WCE, BCX and other mods in use by players"),
+      Description: displayText("show versions of the club, WCE, BCX in use by players"),
       Action: (_, _command, args): void => {
         function getCharacterModInfo(character: Character): string {
           const bcVersion = character.OnlineSharedSettings?.GameVersion ?? "R0";
           const BCXi = window.bcx?.getCharacterVersion(character.MemberNumber) ? ` BCX ${window.bcx.getCharacterVersion(character.MemberNumber) ?? "?"}` : "";
           const FBCi = character.FBC ? `\nWCE v${character.FBC} Alt Arousal: ${character.BCEArousal?.toString()}` : "";
-          const others = character.FBCOtherAddons?.some(mod => !["BCX", "FBC", "WCE"].includes(mod.name))
-            ? `\nOther Addons:\n- ${character.FBCOtherAddons.filter(mod => !["BCX", "FBC", "WCE"].includes(mod.name))
-                .map(mod => `${mod.name} v${mod.version} ${mod.repository ?? ""}`)
-                .join("\n- ")}`
-            : "";
-          return `${CharacterNickname(character)} (${character.MemberNumber ?? ""}) club ${bcVersion}${BCXi}${FBCi}${others}`;
+          return `${CharacterNickname(character)} (${character.MemberNumber ?? ""}) club ${bcVersion}${BCXi}${FBCi}`;
         }
 
         const printList = findDrawnCharacters(args.length > 0 ? args[0] : null, true);
-        const versionOutput = printList
+        const versionOutput = `${printList
           .map(getCharacterModInfo)
           .filter(info => info)
-          .join("\n\n");
+          .join("\n\n")}\n\nUse /mods remote to view installed mods of other players.`;
         fbcChatNotify(versionOutput);
         debug(versionOutput);
       },

@@ -295,13 +295,6 @@ export default function chatAugments() {
     next([data, msg.replace(new RegExp(CLOSINGBRACKETINDICATOR, "g"), ")"), SenderCharacter, metadata])
   );
 
-  SDK.hookFunction("SpeechTransformProcess", HOOK_PRIORITIES.ModifyBehaviourMedium, ([C, m, effects, ignoreOOC], next) => {
-    const { msg, hasStuttered } = bceMessageReplacements(m || "");
-    const result = next([C, msg, effects.filter(f => f !== "stutter" || !fbcSettings.stutters), ignoreOOC]);
-    if (hasStuttered) result.effects.push("stutter");
-    return result;
-  });
-
   /**
    * @param {string} msg
    * @returns {{msg: string, hasStuttered: boolean}}
@@ -365,6 +358,13 @@ export default function chatAugments() {
     }
     return { msg: newWords.join(""), hasStuttered };
   }
+
+  SDK.hookFunction("SpeechTransformProcess", HOOK_PRIORITIES.ModifyBehaviourMedium, ([C, m, effects, ignoreOOC], next) => {
+    const { msg, hasStuttered } = bceMessageReplacements(m || "");
+    const result = next([C, msg, effects.filter(f => f !== "stutter" || !fbcSettings.stutters), ignoreOOC]);
+    if (hasStuttered) result.effects.push("stutter");
+    return result;
+  });
 
   function bceChatAugments() {
     if (CurrentScreen !== "ChatRoom" || !fbcSettings.augmentChat) {

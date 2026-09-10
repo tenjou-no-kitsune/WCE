@@ -1,5 +1,3 @@
-import type { ModSDKModInfo } from "bondage-club-mod-sdk";
-
 import { HIDDEN, BCE_MSG, MESSAGE_TYPES, FBC_VERSION } from "../util/constants";
 import { debug, logWarn, logError } from "../util/logger";
 import { fbcSettings, settingsLoaded } from "../util/settings";
@@ -11,7 +9,6 @@ type BCECapabilities = "clubslave" | "layeringHide" | "preventLayeringByOthers";
 declare global {
   interface Character {
     FBC: string;
-    FBCOtherAddons?: readonly ModSDKModInfo[];
     BCEArousal: boolean;
     BCECapabilities: readonly BCECapabilities[];
     BCEArousalProgress: number;
@@ -37,7 +34,6 @@ interface BCEMessage {
   progress?: number;
   enjoyment?: number;
   activity?: "ClubSlavery";
-  otherAddons?: readonly ModSDKModInfo[];
 }
 
 export function sendHello(target: number | null = null, requestReply = false): void {
@@ -62,9 +58,6 @@ export function sendHello(target: number | null = null, requestReply = false): v
   if (fbcSettings.alternateArousal) {
     fbcMessage.message.progress = Player.BCEArousalProgress || Player.ArousalSettings?.Progress || 0;
     fbcMessage.message.enjoyment = Player.BCEEnjoyment || 1;
-  }
-  if (fbcSettings.shareAddons) {
-    fbcMessage.message.otherAddons = bcModSdk.getModsInfo();
   }
 
   // @ts-expect-error - cannot extend valid dictionary entries to add our type to it, but this is possible within the game's wire format
@@ -94,7 +87,6 @@ export default async function hiddenMessageHandler(): Promise<void> {
     sender.BCEEnjoyment = message.enjoyment || 1;
     sender.BCECapabilities = message.capabilities ?? [];
     if (message.replyRequested) sendHello(sender.MemberNumber);
-    sender.FBCOtherAddons = message.otherAddons;
   }
 
   function processBCEMessage(sender: Character, message: Partial<BCEMessage>, deferred = false): void {

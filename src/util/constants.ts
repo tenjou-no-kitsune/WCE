@@ -1,9 +1,9 @@
-export const FBC_VERSION = "6.3.19";
+export const FBC_VERSION = "6.3.20";
 export const settingsVersion = 63.9;
-export const SUPPORTED_GAME_VERSIONS = ["R131"];
+export const SUPPORTED_GAME_VERSIONS = ["R131", "R132"];
 
-export const fbcChangelog = `WCE v6.3.19
-* BC R131 compatibility and other fixes
+export const fbcChangelog = `WCE v6.3.20
+* BC R132 compatibility and other fixes
 * update buttplug-js for toySync
 
 WCE v6.3

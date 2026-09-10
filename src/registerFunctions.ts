@@ -35,7 +35,6 @@ import pendingMessages from "./functions/pendingMessages";
 import privateWardrobe from "./functions/privateWardrobe";
 import richOnlineProfile from "./functions/richOnlineProfile";
 import settingsPage from "./functions/settingsPage";
-import shareAddons from "./functions/shareAddons";
 import toySync from "./functions/toySync";
 // import functionIntegrityCheck from "./functions/functionIntegrityCheck";
 import wceStyles from "./functions/wceStyles";
@@ -110,7 +109,8 @@ export async function registerAllFunctions(): Promise<void> {
   registerFunction(lockpickHelp, "lockpickHelp");
   registerFunction(commands, "commands");
   registerFunction(chatRoomOverlay, "chatRoomOverlay");
-  registerFunction(privateWardrobe, "privateWardrobe");
+  // ToDo: remove once R132 is out
+  if (GameVersion === "R131") registerFunction(privateWardrobe, "privateWardrobe");
   registerFunction(antiGarbling, "antiGarbling");
   registerFunction(autoGhostBroadcast, "autoGhostBroadcast");
   registerFunction(blindWithoutGlasses, "blindWithoutGlasses");
@@ -130,7 +130,6 @@ export async function registerAllFunctions(): Promise<void> {
   registerFunction(customContentDomainCheck, "customContentDomainCheck");
   registerFunction(numericArousalMeters, "numericArousalMeters");
   registerFunction(richOnlineProfile, "richOnlineProfile");
-  registerFunction(shareAddons, "shareAddons");
   registerFunction(confirmLeave, "confirmLeave");
   registerFunction(chatRoomWhisperFixes, "chatRoomWhisperFixes");
   funcsRegistered = "enable";

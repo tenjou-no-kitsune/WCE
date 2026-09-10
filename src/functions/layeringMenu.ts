@@ -39,7 +39,7 @@ export default async function layeringMenu(): Promise<void> {
     const btn = ElementButton.Create(
       "layering-tab-wce-hide",
       () => {
-        Layering.activeTab = "wce-hide";
+        Layering.activeTab = "wce-hide" as typeof Layering.activeTab;
         const container = document.getElementById("layering-content-container");
         if (container) {
           container.innerHTML = "";
@@ -85,7 +85,7 @@ export default async function layeringMenu(): Promise<void> {
         }
         return null;
       },
-      { ariaChecked: Layering.activeTab === "wce-hide", role: "menuitemradio" }
+      { ariaChecked: Layering.activeTab === ("wce-hide" as typeof Layering.activeTab), role: "menuitemradio" }
     );
     btn.classList.add("layering-tab-button");
     btn.innerText = "Hide";
