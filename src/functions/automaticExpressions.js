@@ -240,7 +240,7 @@ export default async function automaticExpressions() {
    * @param {string[]} skippedTypes Types to skip resetting in addition to automated arousal events
    */
   function resetExpressionQueue(types, skippedTypes = []) {
-    delete Player.ExpressionQueue;
+    Player.ExpressionQueue = [];
     bceExpressionsQueue.push(
       ...bceExpressionsQueue.splice(0).map(e => {
         if (types.includes(e.Type) || (e.Duration <= 0 && e.Type !== AUTOMATED_AROUSAL_EVENT_TYPE && !skippedTypes.includes(e.Type))) {
